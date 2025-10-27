@@ -86,7 +86,7 @@ Used as an **educational example** in my course:
 DirTracker/
 ├── dtr.py            # Entry point (CLI)
 ├── core/
-│   ├── snapshot.py
+│   ├── dirtracker.py
 │   ├── ansi/
 │   │   ├── fix.py          # Enables ANSI colors on Windows
 │   │   └── colorize.py     # Cross-platform color formatting
