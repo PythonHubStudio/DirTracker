@@ -1,5 +1,6 @@
 """Module to read excluded directories and files from configuration files."""
 
+import os
 from core.settings.conf_reader import SETTINGS
 
 
@@ -7,9 +8,11 @@ PATH_TO_FILE_EXCLUDE_DIRS = SETTINGS["PATH_TO_FILE_EXCLUDE_DIRS"]
 PATH_TO_FILE_EXCLUDE_FILES = SETTINGS["PATH_TO_FILE_EXCLUDE_FILES"]
 
 
-def exclude_dirs(path=PATH_TO_FILE_EXCLUDE_DIRS):
+def exclude_dirs(
+    path: str | os.PathLike[str] = PATH_TO_FILE_EXCLUDE_DIRS,
+) -> list[str]:
     """Read exclude file and return list of excluded directories."""
-    excluded_dirs = []
+    excluded_dirs: list[str] = []
     try:
         with open(path, "r") as file:
             for line in file:
@@ -21,9 +24,11 @@ def exclude_dirs(path=PATH_TO_FILE_EXCLUDE_DIRS):
     return excluded_dirs
 
 
-def exclude_files(path=PATH_TO_FILE_EXCLUDE_FILES):
+def exclude_files(
+    path: str | os.PathLike[str] = PATH_TO_FILE_EXCLUDE_FILES,
+) -> list[str]:
     """Read exclude file and return list of excluded files."""
-    excluded_files = []
+    excluded_files: list[str] = []
     try:
         with open(path, "r") as file:
             for line in file:

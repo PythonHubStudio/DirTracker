@@ -14,7 +14,7 @@ def main() -> None:
         "path",
         nargs="?",
         default=SETTINGS.get("PATH"),
-        help="Path to dir you want to follow. Default is CWD"
+        help="Path to dir you want to follow. Default is CWD",
     )
 
     args = parser.parse_args()
@@ -30,6 +30,7 @@ def main() -> None:
     SETTINGS["TARGET_DIR"] = path
 
     from core.dirtracker import watch  # !SETTINGS MUST BE READY!
+
     watch(path, interactive=True)
 
 
@@ -38,4 +39,3 @@ if __name__ == "__main__":
         main()
     except RuntimeError as e:
         print(str(e))
-

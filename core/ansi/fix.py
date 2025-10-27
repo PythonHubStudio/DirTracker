@@ -11,7 +11,7 @@ def enable_ansi_colors() -> None:
     Enables ANSI color support in the Windows console (if needed).
     On other systems (Linux, macOS), this function does nothing.
     """
-    
+
     if os.name != "nt":
         return  # Non-Windows systems already support ANSI.
 

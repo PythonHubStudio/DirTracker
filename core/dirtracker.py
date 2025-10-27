@@ -28,11 +28,13 @@ from core.settings.exclude_reader import exclude_dirs, exclude_files
 
 
 # Pickle file used to store the directory snapshot
-SNAPSHOT_FILE = ".snapshot.pkl"  # Hidden file in the target directory (dot is not a mistake)
+SNAPSHOT_FILE = (
+    ".snapshot.pkl"  # Hidden file in the target directory (dot is not a mistake)
+)
 SNAPSHOT_PATH = os.path.join(SETTINGS.get("TARGET_DIR", "."), SNAPSHOT_FILE)
 
 
-def hash_file(path: str | os.PathLike, *, chunk_size: int = 4096) -> str:
+def hash_file(path: str | os.PathLike[str], *, chunk_size: int = 4096) -> str:
     """
     Return the MD5 hash of a file's contents.
 
@@ -57,8 +59,8 @@ def hash_file(path: str | os.PathLike, *, chunk_size: int = 4096) -> str:
 
 
 def snapshot(
-        directory: str | os.PathLike, *, interactive: bool = False
-        ) -> dict[str, str]:
+    directory: str | os.PathLike[str], *, interactive: bool = False
+) -> dict[str, str]:
     """
     Create a snapshot (dictionary) of a directory state.
 
@@ -97,7 +99,7 @@ def snapshot(
                 if interactive:
                     msg = "If you continue, the file will be considered deleted."
                     msg2 = "\nYou can try root access to run it."
-                    print(colorize(sign="!", code="33", text=msg+msg2))
+                    print(colorize(sign="!", code="33", text=msg + msg2))
                     ans = input("Continue? [Y/n] ").lower().strip()
                     if ans and ans not in {"y", "yes"}:
                         raise RuntimeError("Operation cancelled by user.")
@@ -106,7 +108,13 @@ def snapshot(
 
             except FileNotFoundError as e:
                 print(colorize(sign="!", code="33", text=f"Skipping {path!r}: {e}"))
-                print(colorize(sign="!", code="33", text=f"Maybe was deleted/renamed right now..."))
+                print(
+                    colorize(
+                        sign="!",
+                        code="33",
+                        text=f"Maybe was deleted/renamed right now...",
+                    )
+                )
                 continue
 
             except OSError as e:
@@ -134,7 +142,11 @@ def load_snapshot() -> dict[str, str]:
             with open(SNAPSHOT_PATH, "rb") as file:
                 return pickle.load(file)
         except (EOFError, pickle.UnpicklingError):
-            print(colorize(sign="!", code="31", text="Corrupted snapshot file. Recreating..."))
+            print(
+                colorize(
+                    sign="!", code="31", text="Corrupted snapshot file. Recreating..."
+                )
+            )
     return {}
 
 
@@ -143,8 +155,9 @@ def save_snapshot(new: dict[str, str]) -> None:
         pickle.dump(new, file)
 
 
-
-def watch(directory: str | os.PathLike = ".", *, interactive=False) -> None:
+def watch(
+    directory: str | os.PathLike[str] = ".", *, interactive: bool = False
+) -> None:
     """
     Compare the current directory state with the saved snapshot.
 
@@ -166,7 +179,7 @@ def watch(directory: str | os.PathLike = ".", *, interactive=False) -> None:
 
     added = new.keys() - old.keys()
     removed = old.keys() - new.keys()
-    changed = set()
+    changed: set[str] = set()
     for f in new.keys():
         if f in old.keys() and new[f] != old[f]:
             changed.add(f)
