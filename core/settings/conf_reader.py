@@ -17,15 +17,13 @@ def __conf_read() -> dict[str, str | os.PathLike[str]]:
     with open("./settings/config.conf") as file:
         settings: dict[str, str | os.PathLike[str]] = {}
         for pair in file.readlines():
-            k, v = pair.strip().split("=", 1)
+            pair = pair.strip()
+            if pair.startswith("#") or not pair:
+                continue
+            k, v = pair.split("=", 1)
             settings[k] = v
-        print(
-            colorize(
-                sign="✓",
-                code="32",
-                text="Configuration loaded from ./settings/config.conf",
-            )
-        )
+            msg = "Configuration loaded from ./settings/config.conf"
+        print(colorize(sign="✓", code="32", text=msg))
         return settings
 
 

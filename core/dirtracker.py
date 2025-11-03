@@ -23,6 +23,7 @@ import pickle
 import hashlib
 
 from core.ansi.colorize import colorize
+from core.prompts.prompts import ask_for_continue
 from core.settings.conf_reader import SETTINGS
 from core.settings.exclude_reader import exclude_dirs, exclude_files
 
@@ -100,32 +101,20 @@ def snapshot(
                     msg = "If you continue, the file will be considered deleted."
                     msg2 = "\nYou can try root access to run it."
                     print(colorize(sign="!", code="33", text=msg + msg2))
-                    ans = input("Continue? [Y/n] ").lower().strip()
-                    if ans and ans not in {"y", "yes"}:
-                        raise RuntimeError("Operation cancelled by user.")
-                        # Except it in entrypoint to show message and quit.
-                continue
+                    ask_for_continue()
 
             except FileNotFoundError as e:
                 print(colorize(sign="!", code="33", text=f"Skipping {path!r}: {e}"))
-                print(
-                    colorize(
-                        sign="!",
-                        code="33",
-                        text=f"Maybe was deleted/renamed right now...",
-                    )
-                )
-                continue
+                msg = f"Maybe was deleted/renamed right now..."
+                print(colorize(sign="!", code="33", text=msg))
 
             except OSError as e:
                 print(colorize(sign="!", code="31", text=f"OS error for {path!r}: {e}"))
                 if interactive:
                     msg = "If you continue, the file will be considered deleted."
                     print(colorize(sign="!", code="33", text=msg))
-                    ans = input("Continue? [Y/n] ").lower().strip()
-                    if ans and ans not in {"y", "yes"}:
-                        raise RuntimeError("Operation cancelled by user.")
-                continue
+                    ask_for_continue()
+
     return data
 
 
@@ -142,11 +131,8 @@ def load_snapshot() -> dict[str, str]:
             with open(SNAPSHOT_PATH, "rb") as file:
                 return pickle.load(file)
         except (EOFError, pickle.UnpicklingError):
-            print(
-                colorize(
-                    sign="!", code="31", text="Corrupted snapshot file. Recreating..."
-                )
-            )
+            msg = "Corrupted snapshot file. Recreating..."
+            print(colorize(sign="!", code="31", text=msg))
     return {}
 
 
