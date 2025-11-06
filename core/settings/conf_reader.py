@@ -1,5 +1,6 @@
 """NOTE! SETTINGS dict can be changed during programm running.
-Key "TARGET_DIR" will be added from path = os.path.abspath(args.path)"""
+Key "TARGET_DIR" will be added from path = os.path.abspath(args.path)
+"""
 
 import os
 import sys
@@ -13,6 +14,10 @@ def __conf_read() -> dict[str, str | os.PathLike[str]]:
     key2=value2
     Config file must be [project root]/settings/config.conf
     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    Default values in file is and must be:
+    PATH=.
+    PATH_TO_FILE_EXCLUDE_DIRS=./settings/excluded_dirs.conf
+    PATH_TO_FILE_EXCLUDE_FILES=./settings/excluded_files.conf
     """
     with open("./settings/config.conf") as file:
         settings: dict[str, str | os.PathLike[str]] = {}
@@ -26,9 +31,11 @@ def __conf_read() -> dict[str, str | os.PathLike[str]]:
         print(colorize(sign="✓", code="32", text=msg))
         return settings
 
-
+# It runs during importing this module, to prepare settings.
 try:
     SETTINGS = __conf_read()
+    if not SETTINGS.keys():
+        raise RuntimeError("File config.conf is empty.")
 except Exception as e:
     print(str(e))
     print(__conf_read.__doc__)
