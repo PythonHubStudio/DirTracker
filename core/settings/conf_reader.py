@@ -23,11 +23,14 @@ def __conf_read() -> dict[str, str | os.PathLike[str]]:
         settings: dict[str, str | os.PathLike[str]] = {}
         for pair in file.readlines():
             pair = pair.strip()
+            # continue empty and comment lines
             if pair.startswith("#") or not pair:
                 continue
+            if "=" not in pair:
+                raise ValueError("Data in config file isn't valid!")
             k, v = pair.split("=", 1)
             settings[k] = v
-            msg = "Configuration loaded from ./settings/config.conf"
+        msg = "Configuration loaded from ./settings/config.conf"
         print(colorize(sign="✓", code="32", text=msg))
         return settings
 
