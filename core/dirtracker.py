@@ -160,7 +160,7 @@ def watch(
 
     if not old:
         save_snapshot(new)
-        print(colorize(sign="✓", code="32", text="First snapshot was created!"))
+        print(colorize(sign="!", code="32", text="First snapshot was created!"))
         return
 
     added = new.keys() - old.keys()
@@ -171,7 +171,7 @@ def watch(
             changed.add(f)
 
     if not (added or removed or changed):
-        print(colorize(sign="✓", code="32", text="No changes detected."))
+        print(colorize(sign="!", code="32", text="No changes detected."))
     else:
         for f in added:
             print(colorize(sign="+", code="32", text=f"New file: {f}"))

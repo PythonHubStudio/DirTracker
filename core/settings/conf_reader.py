@@ -31,7 +31,7 @@ def __conf_read() -> dict[str, str | os.PathLike[str]]:
             k, v = pair.split("=", 1)
             settings[k] = v
         msg = "Configuration loaded from ./settings/config.conf"
-        print(colorize(sign="✓", code="32", text=msg))
+        print(colorize(sign="!", code="32", text=msg))
         return settings
 
 # It runs during importing this module, to prepare settings.
